@@ -1,6 +1,8 @@
 package com.binghai.pi.gpio;
 
-import com.binghai.pi.enums.RelayStatus;
+
+
+import com.binghai.pi.enums.RelayState;
 import com.pi4j.io.gpio.*;
 
 /**
@@ -15,10 +17,10 @@ public class GpioService {
         gpio = GpioFactory.getInstance();
     }
 
-    public static void setTo(Integer ioId, RelayStatus status) {
+    public static void setTo(Integer ioId, RelayState status) {
         System.out.println(ioId + " turn to " + status.name());
         GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(ioId));
-        if(status == RelayStatus.HIGH){
+        if(status == RelayState.HIGH){
             pin.high();
         }else{
             pin.low();

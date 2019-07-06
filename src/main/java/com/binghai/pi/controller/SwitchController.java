@@ -1,7 +1,7 @@
 package com.binghai.pi.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.binghai.pi.enums.RelayStatus;
+import com.binghai.pi.enums.RelayState;
 import com.binghai.pi.pojo.Relay;
 import com.binghai.pi.utils.KvStore;
 import org.springframework.beans.factory.InitializingBean;
@@ -45,7 +45,7 @@ public class SwitchController extends BaseController implements InitializingBean
         Relay relay = new Relay();
         relay.setIoId(gpio);
         relay.setName(name);
-        relay.setStatus(RelayStatus.valueOf(status));
+        relay.setStatus(RelayState.valueOf(status));
 
         relay.recovery();
         relays.put(relay.getIoId(), relay);
