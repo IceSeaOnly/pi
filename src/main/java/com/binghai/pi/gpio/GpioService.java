@@ -1,6 +1,7 @@
 package com.binghai.pi.gpio;
 
 import com.binghai.pi.enums.RelayStatus;
+import com.pi4j.io.gpio.*;
 
 /**
  * @author huaishuo
@@ -8,16 +9,29 @@ import com.binghai.pi.enums.RelayStatus;
  **/
 
 public class GpioService {
+    private static GpioController gpio;
+
+    static {
+        gpio = GpioFactory.getInstance();
+    }
 
     public static void setTo(Integer ioId, RelayStatus status) {
         System.out.println(ioId + " turn to " + status.name());
+        GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(ioId));
+        if(status == RelayStatus.HIGH){
+            pin.high();
+        }else{
+            pin.low();
+        }
+
     }
 
     public static void flip(Integer ioId) {
-        System.out.println(ioId + " filp");
+        GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(ioId));
+        pin.toggle();
     }
 
-    public static void shutdown(Integer ioId) {
-        System.out.println(ioId + " shutdown");
+    public static void sfhutdown(Integer ioId) {
+        gpio.shutdown();
     }
 }
