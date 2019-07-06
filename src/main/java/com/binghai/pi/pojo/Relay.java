@@ -44,6 +44,6 @@ public class Relay {
     }
 
     public void shutdown() {
-        GpioService.sfhutdown(ioId);
+        GpioService.shutdown(ioId);
     }
 }

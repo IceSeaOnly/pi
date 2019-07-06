@@ -5,6 +5,9 @@ package com.binghai.pi.gpio;
 import com.binghai.pi.enums.RelayState;
 import com.pi4j.io.gpio.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author huaishuo
  * @date 2019/7/4 上午10:18
@@ -12,28 +15,36 @@ import com.pi4j.io.gpio.*;
 
 public class GpioService {
     private static GpioController gpio;
+    private static Map<Integer,GpioPinDigitalOutput> pins = new HashMap<>();
 
     static {
         gpio = GpioFactory.getInstance();
     }
 
     public static void setTo(Integer ioId, RelayState status) {
-        System.out.println(ioId + " turn to " + status.name());
-        GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(ioId));
+        GpioPinDigitalOutput io = getPin(ioId);
         if(status == RelayState.HIGH){
-            pin.high();
+            io.high();
         }else{
-            pin.low();
+            io.low();
         }
+        System.out.println(ioId + " turn to " + status.name());
+    }
 
+    private static GpioPinDigitalOutput getPin(Integer io){
+        if(pins.get(io) == null){
+            GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(io));
+            pins.put(io,pin);
+        }
+        return pins.get(io);
     }
 
     public static void flip(Integer ioId) {
-        GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(ioId));
-        pin.toggle();
+        GpioPinDigitalOutput io = getPin(ioId);
+        io.toggle();
     }
 
-    public static void sfhutdown(Integer ioId) {
-        gpio.shutdown();
+    public static void shutdown(Integer ioId) {
+
     }
 }
