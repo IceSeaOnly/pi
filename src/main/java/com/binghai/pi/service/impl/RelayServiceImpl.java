@@ -11,6 +11,8 @@ import com.binghai.pi.service.RelayService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
+
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -23,6 +25,7 @@ import java.util.List;
 public class RelayServiceImpl extends BaseService<Relay> implements RelayService {
 
     @Override
+    @Transactional
     public void flip(Long relayId) {
         Relay relay = findById(relayId);
         relay.flip();
@@ -40,6 +43,7 @@ public class RelayServiceImpl extends BaseService<Relay> implements RelayService
     }
 
     @Override
+    @Transactional
     public void on(Long relayId) {
         Relay relay = findById(relayId);
         relay.to(relay.getOnStatus());
@@ -47,6 +51,7 @@ public class RelayServiceImpl extends BaseService<Relay> implements RelayService
     }
 
     @Override
+    @Transactional
     public void off(Long relayId) {
         Relay relay = findById(relayId);
         relay.to(relay.getOffStatus());

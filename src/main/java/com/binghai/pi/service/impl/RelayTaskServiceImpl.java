@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -73,11 +74,13 @@ public class RelayTaskServiceImpl extends BaseService<RelayTask> implements Rela
     }
 
     @Override
+    @Transactional
     public void saveTask(RelayTask task) {
         save(task);
     }
 
     @Override
+    @Transactional
     public void remove(Long relayId, Long taskId) {
         RelayTask task = findById(taskId);
         task.setValid(Boolean.FALSE);
