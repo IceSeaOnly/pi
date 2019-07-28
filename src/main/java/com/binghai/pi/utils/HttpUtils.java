@@ -5,11 +5,10 @@ package com.binghai.pi.utils;
  */
 
 import com.alibaba.fastjson.JSONObject;
+
 import java.io.*;
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.UnknownHostException;
+import java.net.*;
+import java.util.Enumeration;
 import java.util.UUID;
 
 public class HttpUtils {
@@ -191,8 +190,22 @@ public class HttpUtils {
 
     public static String localIp() {
         try {
-            return InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
+            InetAddress address = InetAddress.getLocalHost();
+            if (address.isLoopbackAddress()) {
+                Enumeration<NetworkInterface> allNetInterfaces = NetworkInterface.getNetworkInterfaces();
+                while (allNetInterfaces.hasMoreElements()) {
+                    NetworkInterface netInterface = allNetInterfaces.nextElement();
+                    Enumeration<InetAddress> addresses = netInterface.getInetAddresses();
+                    while (addresses.hasMoreElements()) {
+                        InetAddress ip = addresses.nextElement();
+                        if (!ip.isLinkLocalAddress() && !ip.isLoopbackAddress() && ip instanceof Inet4Address) {
+                            return ip.getHostAddress();
+                        }
+                    }
+                }
+            }
+            return address.getHostAddress();
+        } catch (Exception e) {
             return null;
         }
     }
