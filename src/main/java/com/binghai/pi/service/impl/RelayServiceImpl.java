@@ -8,6 +8,7 @@ import com.binghai.pi.rules.RuleExecutor;
 import com.binghai.pi.rules.context.RuleContext;
 import com.binghai.pi.service.BaseService;
 import com.binghai.pi.service.RelayService;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ import java.util.List;
 @Component
 @EnableScheduling
 @ConditionalOnProperty(prefix = "ice", name = "env", havingValue = "prod")
-public class RelayServiceImpl extends BaseService<Relay> implements RelayService {
+public class RelayServiceImpl extends BaseService<Relay> implements RelayService, InitializingBean {
 
     @Override
     @Transactional
@@ -58,4 +59,10 @@ public class RelayServiceImpl extends BaseService<Relay> implements RelayService
         update(relay);
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        for (Relay relay : findAll(99)) {
+            relay.recovery();
+        }
+    }
 }
