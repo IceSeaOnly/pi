@@ -4,6 +4,7 @@ package com.binghai.pi.gpio;
 
 import com.binghai.pi.enums.RelayState;
 import com.pi4j.io.gpio.*;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +13,6 @@ import java.util.Map;
  * @author huaishuo
  * @date 2019/7/4 上午10:18
  **/
-
 public class GpioService {
     private static GpioController gpio;
     private static Map<Integer,GpioPinDigitalOutput> pins = new HashMap<>();
@@ -42,9 +42,6 @@ public class GpioService {
     public static void flip(Integer ioId) {
         GpioPinDigitalOutput io = getPin(ioId);
         io.toggle();
-    }
-
-    public static void shutdown(Integer ioId) {
-
+        System.out.println(ioId + " flip.");
     }
 }

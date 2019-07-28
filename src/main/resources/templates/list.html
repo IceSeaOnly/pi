@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta
+            name="viewport"
+            content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>智能开关列表</title>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="http://cdn.binghai.site/o_1dgs7ajhcj951mqs14jv1jss1jbua.css"
+    />
+</head>
+<body>
+<div class="hui-wrap">
+    <div class="hui-center-title" style="margin-top:22px;">
+        <h1>智能开关列表</h1>
+    </div>
+    <div class="hui-media-list" style="padding:10px;">
+        <ul>
+            <li th:each="relay:${relayList}">
+
+                <div class="hui-media-list-img" th:onclick="'javascript:flip('+${relay.id}+')'">
+                    <img th:if="${relay.status != relay.onStatus}"
+                         src="http://cdn.binghai.site/o_1dgs77sno2g0bn1mkt1dg81qeia.jpg"
+                    />
+                    <img th:if="${relay.status == relay.onStatus}"
+                         src="http://cdn.binghai.site/o_1dgs78ls01pep1lpr1ne41t5n1aioa.jpg"
+                    />
+                </div>
+
+                <a th:href="'/switch/opt?relayId='+${relay.id}">
+                    <div class="hui-media-content">
+                        <h1 th:text="${'&nbsp;'+relay.name}">NAME</h1>
+                        <p th:text="${'&nbsp;woriking on gpio.'+relay.ioId}">power by hcoder.net</p>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+    function flip(relayId) {
+        window.location.href = '/switch/flip?relayId=' + relayId
+    }
+</script>
+<script
+        src="http://cdn.binghai.site/o_1dgs7bib718t019qjq7jpv11o4ea.js"
+        type="text/javascript"
+        charset="utf-8"
+></script>
+</body>
+</html>

@@ -1,85 +1,118 @@
 package com.binghai.pi.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.binghai.pi.enums.RelayState;
-import com.binghai.pi.pojo.Relay;
-import com.binghai.pi.utils.KvStore;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.binghai.pi.entity.RelayTask;
+import com.binghai.pi.rules.OrderOff;
+import com.binghai.pi.rules.RuleExecutor;
+import com.binghai.pi.rules.context.OrderOffContext;
+import com.binghai.pi.rules.context.OrderOnContext;
+import com.binghai.pi.rules.context.RuleContext;
+import com.binghai.pi.service.RelayService;
+import com.binghai.pi.service.RelayTaskService;
+import com.binghai.pi.utils.TimeTools;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author huaishuo
  * @date 2019/7/3 下午5:41
  **/
-@RestController
+@Controller
 @RequestMapping("switch")
-public class SwitchController extends BaseController implements InitializingBean {
-    private static final String RELAY_LIST_KEY = "RELAY_LIST_KEY";
-    private Map<Integer, Relay> relays = new HashMap<>();
+public class SwitchController extends BaseController {
+    @Autowired
+    private RuleExecutor ruleExecutor;
+    @Autowired
+    private RelayService relayService;
+    @Autowired
+    private RelayTaskService taskService;
+
+    @GetMapping("opt")
+    public Object opt(@RequestParam Long relayId, ModelMap map) {
+        map.put("relay", relayService.get(relayId));
+        map.put("rules", taskService.findAllValidByRelay(relayId));
+        return "opt";
+    }
 
     @GetMapping("list")
-    public Object list() {
-        return success(relays.values());
+    public Object list(ModelMap map) {
+        map.put("relayList", relayService.list());
+        return "list";
     }
 
     @GetMapping("flip")
-    public Object flip(@RequestParam Integer gpio) {
-        relays.get(gpio).flip();
-        updateRelayList();
+    public Object flip(@RequestParam Long relayId, ModelMap map) {
+        relayService.flip(relayId);
+        return "redirect:list";
+    }
+
+    @GetMapping("on")
+    public Object on(@RequestParam Long relayId) {
+        relayService.on(relayId);
         return success();
     }
 
-    @GetMapping("add")
-    public Object add(@RequestParam Integer gpio, @RequestParam String name, @RequestParam String status) {
-        if (relays.get(gpio) != null) {
-            return fail("GPIO USING.");
-        }
-
-        Relay relay = new Relay();
-        relay.setIoId(gpio);
-        relay.setName(name);
-        relay.setStatus(RelayState.valueOf(status));
-
-        relay.recovery();
-        relays.put(relay.getIoId(), relay);
-        updateRelayList();
+    @GetMapping("off")
+    public Object off(@RequestParam Long relayId) {
+        relayService.off(relayId);
         return success();
     }
 
-    private void updateRelayList() {
-        KvStore.putOrUpdate(RELAY_LIST_KEY, relays.values());
-    }
+    @PostMapping("addRule")
+    public Object addRule(@RequestBody Map map) {
+        String contextName = getString(map, "_contextName");
+        Long relayId = getLong(map, "_relayId");
 
-    @GetMapping("delete")
-    public Object delete(@RequestParam Integer gpio) {
-        if (relays.get(gpio) == null) {
-            return success();
-        }
+        RuleContext ctx = ruleExecutor.createContext(contextName, map);
+        RelayTask task = new RelayTask();
+        task.setJsonContext(JSONObject.toJSONString(ctx));
+        task.setRelayId(relayId);
+        task.setValid(Boolean.TRUE);
 
-        relays.get(gpio).shutdown();
-        relays.remove(gpio);
-        updateRelayList();
+        taskService.saveTask(task);
         return success();
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        JSONArray array = KvStore.getJsonArray(RELAY_LIST_KEY);
-        if (CollectionUtils.isEmpty(array)) {
-            return;
-        }
+    @GetMapping("deleteTask")
+    public String deleteTask(@RequestParam Long taskId, @RequestParam Long relayId) {
+        taskService.remove(relayId, taskId);
+        return "redirect:opt?relayId=" + relayId;
+    }
 
-        for (int i = 0; i < array.size(); i++) {
-            Relay relay = array.getObject(i, Relay.class);
-            relay.recovery();
-            relays.put(relay.getIoId(), relay);
+    @GetMapping("selfChooseDate")
+    public String selfChooseDate() {
+        return "selfChooseDate";
+    }
+
+    @GetMapping("executeMinsWait")
+    public String executeMinsWait(@RequestParam Integer type, @RequestParam Integer mins, @RequestParam Long relayId) {
+        long target = Long.valueOf(mins) * 60 * 1000 + now();
+        String ds = TimeTools.piFormat(target);
+        RelayTask task = new RelayTask();
+        String timeDesc = TimeTools.format(target);
+        if (type == 0) {
+            relayService.on(relayId);
+            OrderOffContext off = new OrderOffContext(timeDesc + "定时关", Boolean.FALSE, ds);
+            task.setType("定时关");
+            task.setName(timeDesc + "定时关");
+            task.setRelayId(relayId);
+            task.setJsonContext(JSONObject.toJSONString(off, SerializerFeature.WriteClassName));
+            task.setValid(Boolean.TRUE);
+        } else {
+            relayService.off(relayId);
+            OrderOnContext on = new OrderOnContext(timeDesc + "定时开", Boolean.FALSE, ds);
+            task.setType("定时开");
+            task.setName(timeDesc + "定时开");
+            task.setRelayId(relayId);
+            task.setJsonContext(JSONObject.toJSONString(on, SerializerFeature.WriteClassName));
+            task.setValid(Boolean.TRUE);
         }
+        taskService.saveTask(task);
+        return "redirect:opt?relayId=" + relayId;
     }
 }
