@@ -35,15 +35,16 @@ public class RelayTaskServiceImpl extends BaseService<RelayTask> implements Rela
         return query(valid);
     }
 
-    @Scheduled(cron = "0/1 * * * * ?")
+    @Scheduled(cron = "0/5 * * * * ?")
+    @Transactional
     public void secondTriger() {
         List<RelayTask> tasks = findAllValid();
         for (RelayTask task : tasks) {
             RuleContext context = JSONObject.parseObject(task.getJsonContext(), RuleContext.class);
             if (ruleExecutor.isValid(context)) {
                 RuleResult result = ruleExecutor.execute(context);
-                logger.info("{} executed,result = {}", context.getTaskName(), result);
                 if (null != result) {
+                    logger.info("{} executed,result = {}", context.getTaskName(), result);
                     switch (result) {
                         case FLIP:
                             relayService.flip(task.getRelayId());
@@ -55,6 +56,9 @@ public class RelayTaskServiceImpl extends BaseService<RelayTask> implements Rela
                             relayService.off(task.getRelayId());
                             break;
                     }
+                    task.setValid(Boolean.FALSE);
+                    update(task);
+                    logger.info("{} consumed", context.getTaskName());
                 }
             } else {
                 task.setValid(Boolean.FALSE);

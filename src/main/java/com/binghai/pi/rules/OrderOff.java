@@ -37,7 +37,7 @@ public class OrderOff extends BaseRelayRule<OrderOffContext> {
 
     @Override
     public String contextName() {
-        return OrderOff.class.getSimpleName();
+        return OrderOffContext.class.getSimpleName();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class OrderOff extends BaseRelayRule<OrderOffContext> {
         if (context.getRepeat()) {
             return true;
         }
-        return now() < TimeTools.piParse(context.getTime());
+        return now() - buffer < TimeTools.piParse(context.getTime());
     }
 
     @Override

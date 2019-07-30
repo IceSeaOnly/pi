@@ -60,7 +60,7 @@ public class IpPusher {
         redirect.setMessageURL(url);
 
         FeedCardMessageItem qrUrl = new FeedCardMessageItem();
-        qrUrl.setTitle("view the qr code");
+        qrUrl.setTitle("run on [" + ip + "]");
         qrUrl.setPicURL(qrCodeUrl);
         qrUrl.setMessageURL(qrCodeUrl);
 

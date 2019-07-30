@@ -32,7 +32,7 @@ public class Intermission extends BaseRelayRule<IntermissionContext> {
 
     @Override
     public boolean valid(IntermissionContext context) {
-        return now() < context.getInvalidTs();
+        return now() - buffer < context.getInvalidTs();
     }
 
     @Override

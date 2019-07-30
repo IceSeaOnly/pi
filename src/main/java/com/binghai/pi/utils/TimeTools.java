@@ -29,6 +29,18 @@ public class TimeTools {
         return "NULL";
     }
 
+    public static String formatWithoutSecond(Long date) {
+        if (date == null) { return null; }
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            return df.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "NULL";
+    }
+
     public static String format2yyyy_MM_dd(Long date) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         return df.format(date);

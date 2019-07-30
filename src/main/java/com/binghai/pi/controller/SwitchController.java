@@ -94,7 +94,7 @@ public class SwitchController extends BaseController {
         long target = Long.valueOf(mins) * 60 * 1000 + now();
         String ds = TimeTools.piFormat(target);
         RelayTask task = new RelayTask();
-        String timeDesc = TimeTools.format(target);
+        String timeDesc = TimeTools.formatWithoutSecond(target);
         if (type == 0) {
             relayService.on(relayId);
             OrderOffContext off = new OrderOffContext(timeDesc + "定时关", Boolean.FALSE, ds);

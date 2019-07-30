@@ -12,6 +12,8 @@ import java.util.Map;
  * @date 2019/7/28 下午3:42
  **/
 public abstract class BaseRelayRule<T extends RuleContext> extends BaseBean {
+    static final long buffer = 15 * 1000;
+
     public abstract RuleResult evaluate(T context);
 
     public abstract String name();

@@ -45,7 +45,7 @@ public class OrderOn extends BaseRelayRule<OrderOnContext> {
         if (context.getRepeat()) {
             return true;
         }
-        return now() < TimeTools.piParse(context.getTime());
+        return now() - buffer < TimeTools.piParse(context.getTime());
     }
 
     @Override
