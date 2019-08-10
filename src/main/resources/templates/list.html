@@ -33,7 +33,7 @@
 
                 <a th:href="'/switch/opt?relayId='+${relay.id}">
                     <div class="hui-media-content">
-                        <h1 th:text="${'&nbsp;'+relay.name}">NAME</h1>
+                        <h1 th:text="${'&nbsp;ID:'+relay.id+' , '+relay.name}">NAME</h1>
                         <p th:text="${'&nbsp;woriking on gpio.'+relay.ioId}">power by hcoder.net</p>
                     </div>
                 </a>
