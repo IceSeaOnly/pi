@@ -14,8 +14,8 @@ import java.util.UUID;
  * @author huaishuo
  * @date 2019/7/28 下午9:49
  **/
-@Component
-@ConditionalOnProperty(prefix = "ice", name = "env", havingValue = "dev")
+//@Component
+//@ConditionalOnProperty(prefix = "ice", name = "env", havingValue = "dev")
 public class MockedRelayTaskServiceImpl implements RelayTaskService {
     @Override
     public List<RelayTask> findAllValid() {
@@ -48,6 +48,11 @@ public class MockedRelayTaskServiceImpl implements RelayTaskService {
 
     @Override
     public void remove(Long relayId, Long taskId) {
+
+    }
+
+    @Override
+    public void updateTask(RelayTask task) {
 
     }
 

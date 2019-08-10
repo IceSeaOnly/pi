@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta
+            name="viewport"
+            content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>智能+</title>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/css/hui.css"
+    />
+</head>
+<body>
+<div class="hui-wrap">
+    <div class="hui-center-title" style="margin-top:22px;">
+        <h1 >新增智慧生活+</h1>
+    </div>
+    <form style="padding:28px 10px;" class="hui-form" id="form1">
+        <div class="hui-form-items">
+            <div class="hui-form-items-title">任务名</div>
+            <input type="text" class="hui-input hui-input-clear" name="name" placeholder="如：DEMO">
+        </div>
+        <div class="hui-form-items">
+            <div class="hui-form-items-title">循环间隔</div>
+            <input type="text" class="hui-input hui-input-clear" name="intermission" placeholder="大于 3000">
+        </div>
+
+        <div class="hui-form-items">
+            <div class="hui-form-items-title">循环</div>
+            <div class="hui-form-radios" style="line-height:38px;">
+                <input type="radio" value="false" name="repeat" id="g1" checked="checked" onchange="showSelectRes(this);" ><label for="g1">否</label><br>
+                <input type="radio" value="true" name="repeat" id="g2"  onchange="showSelectRes(this);"><label for="g2">是</label>
+            </div>
+        </div>
+        <div class="hui-form-items">
+            <div class="hui-form-items-title">执行序列</div>
+            <div class="hui-form-textarea">
+                <textarea placeholder="格式：RELAY_ID,STATUS,TASK_AFTER_NOW;" name="json"></textarea>
+            </div>
+        </div>
+        <div style="padding:15px 8px;">
+            <button type="button" class="hui-button hui-primary hui-fr" id="submitBtn">提交数据</button>
+        </div>
+    </form>
+</div>
+
+<script
+        src="http://cdn.binghai.site/o_1dgs7bib718t019qjq7jpv11o4ea.js"
+        type="text/javascript"
+        charset="utf-8"
+></script>
+<script
+        src="/js/hui-form.js"
+        type="text/javascript"
+        charset="utf-8"
+></script>
+<script>
+    hui.formInit();
+
+    hui('#submitBtn').click(function(){
+        var data = hui.getFormData('#form1');
+        hui.post(
+            '/nature/add',
+            data,
+            function(res){
+                if("OK" == res){
+                    window.location.href = '/nature/home';
+                }else{
+                    hui.alert('填写有误');
+                }
+            },
+            function(e){
+                hui.iconToast('读取消息失败', 'warn');
+            }
+        );
+        console.log(JSON.stringify(data));
+    });
+    //获取单选框的值
+    function showSelectRes(_selfBtn){
+        var val;
+        hui(_selfBtn).parent().find('input').each(function(cObj){
+            if(cObj.checked){val = cObj.value;}
+        });
+        console.log(val);
+    }
+</script>
+</body>
+</html>

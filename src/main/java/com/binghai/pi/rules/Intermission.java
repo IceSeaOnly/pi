@@ -15,9 +15,7 @@ import java.util.Map;
 public class Intermission extends BaseRelayRule<IntermissionContext> {
     @Override
     public RuleResult evaluate(IntermissionContext context) {
-        long start = context.getStartS();
-        long dis = now() / 1000 - start;
-        return dis % context.getInvalidTs() == 0 ? RuleResult.FLIP : null;
+        return runnable(context) ? RuleResult.FLIP : null;
     }
 
     @Override
@@ -33,6 +31,13 @@ public class Intermission extends BaseRelayRule<IntermissionContext> {
     @Override
     public boolean valid(IntermissionContext context) {
         return now() - buffer < context.getInvalidTs();
+    }
+
+    @Override
+    public boolean runnable(IntermissionContext context) {
+        long start = context.getStartS();
+        long dis = now() / 1000 - start;
+        return dis % context.getInvalidTs() == 0 ? true : false;
     }
 
     @Override

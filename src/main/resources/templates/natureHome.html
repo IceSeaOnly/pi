@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta
+            name="viewport"
+            content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>智能+</title>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="http://cdn.binghai.site/o_1dgs7ajhcj951mqs14jv1jss1jbua.css"
+    />
+</head>
+<body>
+<div class="hui-wrap">
+    <div class="hui-center-title" style="margin-top:22px;">
+        <h1>智慧生活+</h1>
+    </div>
+    <style type="text/css">
+        .bgGreen {
+            background: #1BC5BB !important;
+        }
+
+        .bgRed {
+            background: #EE4B47 !important;
+        }
+
+        .bgAdd {
+            background: rgba(20, 65, 255, 0.71) !important;
+        }
+
+        .demo2 {
+            height: 80px;
+            text-align: center;
+            color: #FFF;
+            line-height: 80px;
+            font-size: 22px;
+            margin: 5px;
+            background: #79acff;
+        }
+    </style>
+    <div>
+        <a th:each="task,idx:${list}" th:href="${'detail?taskId='+task.id}">
+            <div th:class="${idx.index%2 == 0?'demo2 bgGreen':(idx.index%3==0?'demo2 bgRed':'demo2')}" th:text="${task.name}">1</div>
+        </a>
+        <a href="/addNature">
+            <div class="demo2 bgAdd" >新增智慧生活+</div>
+        </a>
+    </div>
+</div>
+
+<script
+        src="http://cdn.binghai.site/o_1dgs7bib718t019qjq7jpv11o4ea.js"
+        type="text/javascript"
+        charset="utf-8"
+></script>
+</body>
+</html>

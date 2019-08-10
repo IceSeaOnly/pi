@@ -3,7 +3,6 @@ package com.binghai.pi.rules;
 import com.alibaba.fastjson.JSONObject;
 import com.binghai.pi.enums.RuleResult;
 import com.binghai.pi.rules.context.OrderOffContext;
-import com.binghai.pi.utils.TimeTools;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -17,15 +16,8 @@ public class OrderOff extends BaseRelayRule<OrderOffContext> {
 
     @Override
     public RuleResult evaluate(OrderOffContext context) {
-        String now = TimeTools.piFormat(now());
-        if (context.getRepeat()) {
-            if (now.substring(4).equals(context.getTime().substring(4))) {
-                return RuleResult.OFF;
-            }
-        } else {
-            if (now.equals(context.getTime())) {
-                return RuleResult.OFF;
-            }
+        if (runnable(context)) {
+            return RuleResult.OFF;
         }
         return null;
     }
@@ -42,10 +34,12 @@ public class OrderOff extends BaseRelayRule<OrderOffContext> {
 
     @Override
     public boolean valid(OrderOffContext context) {
-        if (context.getRepeat()) {
-            return true;
-        }
-        return now() - buffer < TimeTools.piParse(context.getTime());
+        return now() - buffer < context.getTs();
+    }
+
+    @Override
+    public boolean runnable(OrderOffContext context) {
+        return now() > context.getTs() && now() - buffer < context.getTs();
     }
 
     @Override

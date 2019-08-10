@@ -16,4 +16,6 @@ public interface RelayTaskService {
     void saveTask(RelayTask task);
 
     void remove(Long relayId, Long taskId);
+
+    void updateTask(RelayTask task);
 }

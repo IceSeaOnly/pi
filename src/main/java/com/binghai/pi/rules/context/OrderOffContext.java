@@ -8,10 +8,10 @@ import lombok.Data;
  **/
 @Data
 public class OrderOffContext extends RuleContext {
-    private String time;
+    private Long ts;
 
-    public OrderOffContext(String taskName, Boolean repeat, String time) {
+    public OrderOffContext(String taskName, Boolean repeat, Long ts) {
         super(taskName, repeat);
-        this.time = time;
+        this.ts = ts;
     }
 }

@@ -43,7 +43,7 @@ public class IpPusher {
     }
 
     private void pushLocal(String ip) throws Exception {
-        String url = "http://" + ip + ":" + port + "/switch/list";
+        String url = "http://" + ip + ":" + port + "/index";
         System.out.println(url);
         String qrCodeUrl = "https://wx.nanayun.cn/qrCode?t=" + url;
         FeedCardMessage msg = new FeedCardMessage();

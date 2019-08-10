@@ -92,12 +92,12 @@ public class SwitchController extends BaseController {
     @GetMapping("executeMinsWait")
     public String executeMinsWait(@RequestParam Integer type, @RequestParam Integer mins, @RequestParam Long relayId) {
         long target = Long.valueOf(mins) * 60 * 1000 + now();
-        String ds = TimeTools.piFormat(target);
+
         RelayTask task = new RelayTask();
-        String timeDesc = TimeTools.formatWithoutSecond(target);
+        String timeDesc = TimeTools.format(target);
         if (type == 0) {
             relayService.on(relayId);
-            OrderOffContext off = new OrderOffContext(timeDesc + "定时关", Boolean.FALSE, ds);
+            OrderOffContext off = new OrderOffContext(timeDesc + "定时关", Boolean.FALSE, target);
             task.setType("定时关");
             task.setName(timeDesc + "定时关");
             task.setRelayId(relayId);
@@ -105,7 +105,7 @@ public class SwitchController extends BaseController {
             task.setValid(Boolean.TRUE);
         } else {
             relayService.off(relayId);
-            OrderOnContext on = new OrderOnContext(timeDesc + "定时开", Boolean.FALSE, ds);
+            OrderOnContext on = new OrderOnContext(timeDesc + "定时开", Boolean.FALSE, target);
             task.setType("定时开");
             task.setName(timeDesc + "定时开");
             task.setRelayId(relayId);

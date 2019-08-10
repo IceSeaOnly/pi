@@ -75,18 +75,7 @@
     <div class="hui-flex">
         <div class="demo" th:onclick="'javascript:shutdownWait(360,'+${relay.id}+')'">6小时</div>
         <div class="demo bgGreen" th:onclick="'javascript:shutdownWait(480,'+${relay.id}+')'">8小时</div>
-        <div class="demo bgRed" id="selfDpk" th:onclick="'javascript:shutdownWait(-1,'+${relay.id}+')'">自定义</div>
-    </div>
-
-    <div class="hui-common-title" style="margin-top:15px;">
-        <div class="hui-common-title-line"></div>
-        <div class="hui-common-title-txt">高级规则</div>
-        <div class="hui-common-title-line"></div>
-    </div>
-    <div class="hui-flex">
-        <div class="demo">间歇循环</div>
-        <div class="demo bgGreen">每日定开</div>
-        <div class="demo bgRed">每日定关</div>
+        <div class="demo bgGreen" th:onclick="'javascript:shutdownWait(720,'+${relay.id}+')'">12小时</div>
     </div>
 
 

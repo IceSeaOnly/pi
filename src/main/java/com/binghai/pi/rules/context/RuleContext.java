@@ -8,6 +8,7 @@ public abstract class RuleContext {
     public String taskName;
     private Boolean repeat;
 
+
     public String getTaskName() {
         return taskName;
     }
